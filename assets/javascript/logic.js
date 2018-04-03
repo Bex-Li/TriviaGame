@@ -2,51 +2,50 @@ var sixtySecNum = 10;
 var intervalId;
 var correctAnsCounter = 0;
 var incorrAnsCounter = 0;
-var unAnsweredCounter = 0;
+
 var multiQuestion = [
   "How many slices of pizza did you eat?",
-  "Second Trivia Question",
-  "Third Trivia Question",
-  "Fourth Trivia Question",
+  "A Question",
+  "AA Question",
+  "AAA Question"
+];
 
-]
-var multiAnswers = [[
-  "one",
+var unAnsweredCounter = multiQuestion.length;
+
+var multiAnswers = [
+  ["one",
   "whole pie",
   "none",
   "three"],
-
-["First Question Answer B-False",
-  "Second Question Answer B-False",
-  "Third Question Answer B-True",
-  "Fourth Question Answer B-False"],
-
-["First Question Answer C-False",
-  "Second Question Answer C-True",
-  "Third Question Answer C-False",
-  "Fourth Question Answer C-False"]
-
-["First Question Answer D-True",
-"Second Question Answer D-False",
-"Third Question Answer D-False",
-"Fourth Question Answer D-False"]
-
-]
+  ["A",
+  "B",
+  "C",
+  "D"],
+  ["AA",
+  "BB",
+  "CC",
+  "DD"],
+  ["AAA",
+  "BBB",
+  "CCC",
+  "DDD"]
+];
 var correctAnswers = [
   "one",
-  "Second Correct Answer",
-  "Third Correct Answer",
-  "Fourth Correct Answer",
-]
+  "A",
+  "AA",
+  "AAA",
+];
 
 $("#start").on("click", start);
 $("#stop").on("click", stop);
-
-// $("#resume").on("click", run);
+$(".question").on("click", "input", checkAnswers);
 
 function start() {
+  $("#start").hide();
   run();
   writeQuestion();
+  $("#stop").append($('<input id="stop" type="button" class="w3-btn w3-round-xlarge" value="STOP">'));
 }
 
 function run() {
@@ -59,28 +58,53 @@ function decrement() {
   $("#timerDiv").html("<h2>" + sixtySecNum + "</h2>");
   if (sixtySecNum === 0) {
     stop();
-    alert("Time Up!");
   }
 }
 
 function stop() {
   clearInterval(intervalId);
+  $(".question").hide();
+  $("#timerDiv").hide();
+  $(".counters").html("Correct Answers: " + correctAnsCounter + "<br>");
+  $(".counters").append("Wrong Answers: " + incorrAnsCounter + "<br>"); 
+  $(".counters").append("You Didn't Answer: " + unAnsweredCounter + " questions" + "<br>"); 
 }
 
 function writeQuestion() {
-  for (i = 0; i < multiQuestion.length; i++) {
+  for (var i = 0; i < multiQuestion.length; i++) {
 
     var writeQuestion = $("<br> <p>" + multiQuestion[i] + " </p> <br>");
     writeQuestion.addClass("styleClass");
-    writeQuestion.attr("data-questionValue", multiQuestion[i]);
+    writeQuestion.attr("data-questionValue", correctAnswers[i]);
     $(".question").append(writeQuestion);
 
-    for (j = 0; j < multiAnswers[i].length; j++) {
-      $(".question").append("<input type= 'radio' name= 'answers"
-        + [i] + "' value= '" + multiAnswers[i][j] + "'> "
-        + multiAnswers[i][j] + "<br>");
+    for (var j = 0; j < multiAnswers[i].length; j++) {
+      $(".question").append("<input type='radio' class='radio' name='answers" 
+      + [i] + "' value= '" + multiAnswers[i][j] + "'> "
+      + multiAnswers[i][j] + "<br>");
     }
   }
+}
+
+//correctAnswer function
+function checkAnswers() {
+  var userInput = $(this).val();
+  console.log(userInput);
+  var name = $(this)[0].name;
+  var key = name.split("answers");
+  console.log(key);
+  var index = key[1];
+  console.log(index);
+  if (userInput === correctAnswers[index]) {
+    correctAnsCounter++; 
+    unAnsweredCounter--;
+    console.log("answers match");
+  } else {
+    incorrAnsCounter++; 
+    unAnsweredCounter--;
+    console.log("answers DON'T match");
+  }
+  console.log("you didn't answer question #" + unAnsweredCounter);
 }
 
 
